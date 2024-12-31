@@ -21,6 +21,7 @@ const HeroSection = ({ onSearch }) => {
     const fetchHotels = async () => {
       try {
         const data = await getHotelsList(1, 10);
+        console.log(data);
         setHotels(data.hotels || []);
         setFilteredHotels(data.hotels || []); // Initialize filtered hotels
       } catch (error) {
@@ -96,8 +97,9 @@ const HeroSection = ({ onSearch }) => {
       <h1>Find the Perfect deal, always.</h1>
       <p>
         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique
-        officia non corrupti pariatur ```jsx aspernatur sint modi commodi cum
-        possimus blanditiis facilis beatae repellendus.
+        officia non corrupti pariatur aspernatur sint modi commodi cum possimus
+        blanditiis facilis beatae repellendus, autem voluptates ratione delectus
+        architecto quae dolore.
       </p>
       <div className="search-bar">
         <input
@@ -210,14 +212,38 @@ const HeroSection = ({ onSearch }) => {
         <main className="hotel-grid">
           <h3>Explore Hotels</h3>
           <div className="grid">
-            {filteredHotels.map((hotel, index) => (
-              <div className="hotel-card" key={index}>
-                <img src="/hotel.jpg" alt={hotel.name} />
-                <h4>{hotel.name}</h4>
-                <p>{hotel.price}</p>
-                <button>View</button>
-              </div>
-            ))}
+            {filteredHotels.map((hotel, index) => {
+              // Calculate the price range for the hotel
+              const prices = hotel.rooms.map((room) => room.price);
+              const minPrice = Math.min(...prices);
+              const maxPrice = Math.max(...prices);
+
+              return (
+                <div className="hotel-card" key={index}>
+                  <img
+                    src={hotel.image_url}
+                    alt={hotel.name}
+                    className="hotel-image"
+                  />
+                  <div className="name-rating">
+                    <h4 className="hotel-name">{hotel.name}</h4>
+                    <p className="hotel-rating">
+                      <span role="img" aria-label="star">
+                        ⭐
+                      </span>{" "}
+                      {hotel.rating}
+                    </p>
+                  </div>
+                  <p className="hotel-city">{hotel.city}</p>
+                  <div className="price-view">
+                    <p className="hotel-price">
+                      ₹ {minPrice} - {maxPrice}
+                    </p>
+                    <button className="view-button">View ➡</button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
           {/* Pagination */}
           <div className="pagination">
